@@ -1,6 +1,8 @@
 # Saltline — Fable 5.2 FPS
 
 A small browser first-person shooter: one level in a rainy container port. Cut three uplink relays while drones ("Gulls") and robot dogs ("Hounds") hunt you.
+## Demo
+https://realcodebear.github.io/saltline-fable-5.2/
 
 ## Where it comes from
 
