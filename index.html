@@ -1,6 +1,6 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Saltline</title>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>盐线行动 · Saltline</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500&family=Barlow+Condensed:wght@400;500;600&display=swap">
@@ -333,6 +333,42 @@ kbd { display: inline-block; font: 500 10px/1 var(--f-mono); color: var(--bone);
   .menu *, .hud *, .comms, .loc-card, .loc-card *, #boot, .m-bars i { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .h-warn.on { animation: none; opacity: 1; }
   .h-cue.urgent { animation: none; }
+}
+
+
+/* ---- mobile ergonomics + Simplified Chinese ---- */
+:root { --f-label: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', system-ui, sans-serif; }
+@media (max-width: 760px) {
+  html, body, #app { width: 100%; height: 100%; height: 100dvh; }
+  #app { min-height: 100svh; }
+  .panel { width: min(100vw, 520px); border-left: 0; }
+  .panel-b { padding-left: max(18px, var(--sal)); padding-right: max(18px, var(--sar)); }
+  .panel-h { padding-left: max(16px, var(--sal)); padding-right: max(16px, var(--sar)); }
+  .tabs .tab, .btn, .t-btn { min-height: 44px; }
+  .t-btn { touch-action: none; -webkit-user-select: none; user-select: none; }
+  .t-fire { width: 82px; height: 82px; right: calc(16px + var(--sar)); bottom: calc(56px + var(--sab)); }
+  .t-jump { right: calc(16px + var(--sar)); bottom: calc(150px + var(--sab)); }
+  .t-reload { right: calc(104px + var(--sar)); bottom: calc(112px + var(--sab)); }
+  .t-ads { right: calc(108px + var(--sar)); bottom: calc(24px + var(--sab)); }
+  .t-interact { right: calc(184px + var(--sar)); bottom: calc(98px + var(--sab)); }
+  .m-screen { max-height: calc(100dvh - var(--sat) - var(--sab) - 20px); overflow-y: auto; overscroll-behavior: contain; }
+  .m-legend { max-width: calc(100vw - 32px); }
+  .m-legend span { white-space: normal; }
+}
+@media (max-width: 420px) {
+  .m-eyebrow { font-size: 10px; letter-spacing: .1em; }
+  .m-word { font-size: clamp(44px, 14vw, 72px) !important; }
+  .m-premise { font-size: 16px; }
+  .t-fire { width: 76px; height: 76px; }
+  .t-btn { font-size: 11px; }
+  .h-compass { top: calc(8px + var(--sat)); }
+}
+@media (orientation: landscape) and (max-height: 500px) and (pointer: coarse) {
+  .t-fire { right: calc(14px + var(--sar)); bottom: calc(18px + var(--sab)); }
+  .t-jump { right: calc(14px + var(--sar)); bottom: calc(104px + var(--sab)); }
+  .t-reload { right: calc(96px + var(--sar)); bottom: calc(76px + var(--sab)); }
+  .t-ads { right: calc(100px + var(--sar)); bottom: calc(10px + var(--sab)); }
+  .t-interact { right: calc(174px + var(--sar)); bottom: calc(62px + var(--sab)); }
 }
 
 </style>
@@ -961,8 +997,7 @@ vec4 sRGBTransferOETF( in vec4 value ) {
 		}
 		vec3 worldNormal = inverseTransformDirection( transformedNormal, viewMatrix );
 		#ifdef ENVMAP_MODE_REFLECTION
-			vReflect = reflect( cameraToVertex, worldNormal );
-		#else
+			vReflect = reflect( cameraToVertex, worldNormal );		#else
 			vReflect = refract( cameraToVertex, worldNormal, refractionRatio );
 		#endif
 	#endif
@@ -1961,8 +1996,7 @@ vec4 packDepthToRGBA( const in float v ) {
 	return vec4( vuf * Inv255, gf * PackUpscale, bf * PackUpscale, af );
 }
 vec3 packDepthToRGB( const in float v ) {
-	if( v <= 0.0 )
-		return vec3( 0., 0., 0. );
+	if( v <= 0.0 )		return vec3( 0., 0., 0. );
 	if( v >= 1.0 )
 		return vec3( 1., 1., 1. );
 	float vuf;
@@ -2961,8 +2995,7 @@ void main() {
 	vHighPrecisionZW = gl_Position.zw;
 }`,_S=`#if DEPTH_PACKING == 3200
 	uniform float opacity;
-#endif
-#include <common>
+#endif#include <common>
 #include <packing>
 #include <uv_pars_fragment>
 #include <map_pars_fragment>
@@ -3961,7 +3994,6 @@ void main() {
 				if ( all( equal( axis, vec3( 0.0 ) ) ) ) {
 
 					axis = vec3( vOutputDirection.z, 0.0, - vOutputDirection.x );
-
 				}
 
 				axis = normalize( axis );
@@ -4961,8 +4993,7 @@ void surf(vec2 uv){
   float wn = fbm(uv, vec2(200.0), 2, 1.0);
   float bead = smoothstep(0.012, 0.004, dseam + (wn - 0.5) * 0.004);
   float ripple = 0.75 + 0.25 * sin((uv.x + uv.y) * TAU * 400.0);
-  float dish = cos(uv.x * TAU * 8.0) * 0.5 + 0.5;
-  float big = fbm(uv, vec2(2.0), 4, 2.0), mid = fbm(uv, vec2(14.0), 4, 3.0), fine = fbm(uv, vec2(220.0), 2, 4.0);
+  float dish = cos(uv.x * TAU * 8.0) * 0.5 + 0.5;  float big = fbm(uv, vec2(2.0), 4, 2.0), mid = fbm(uv, vec2(14.0), 4, 3.0), fine = fbm(uv, vec2(220.0), 2, 4.0);
   float roller = fbm(uv, vec2(120.0, 30.0), 3, 5.0);
   float seamK = smoothstep(0.12, 0.0, dseam);
   float pit = fbm(uv, vec2(70.0), 4, 7.0);
@@ -5961,8 +5992,7 @@ void main() {
         sky += uSunCol * (pow(sd, 6.0) * 0.6 + pow(sd, 90.0) * 6.0);
         // blue -> amber dichroic coating across the glass, a soft diagonal sheen band, and a thin dark edge
         float band = smoothstep(0.25, 0.5, vUv.x * 0.6 + vUv.y) * (1.0 - smoothstep(0.62, 0.95, vUv.x * 0.6 + vUv.y));
-        vec3 coat = mix(vec3(0.30, 0.50, 0.95), vec3(1.0, 0.62, 0.28), clamp(fres * 2.2 + vUv.y * 0.75 - 0.15, 0.0, 1.0));
-        vec2 e = abs(vUv - 0.5) * 2.0; float edge = smoothstep(0.90, 1.0, max(e.x, e.y));
+        vec3 coat = mix(vec3(0.30, 0.50, 0.95), vec3(1.0, 0.62, 0.28), clamp(fres * 2.2 + vUv.y * 0.75 - 0.15, 0.0, 1.0));        vec2 e = abs(vUv - 0.5) * 2.0; float edge = smoothstep(0.90, 1.0, max(e.x, e.y));
         float refl = 0.12 + 0.60 * fres + 0.07 * band;
         // faint emitter glow that stays visible off-axis (what you see of a powered sight from the hip)
         vec2 eg = (vUv - vec2(0.5, 0.16)) * vec2(1.0, 1.6); retCol += vec3(1.0, 0.10, 0.04) * 0.20 * exp(-dot(eg, eg) * 60.0) * (1.0 - smoothstep(0.985, 0.9995, k));
@@ -6189,6 +6219,38 @@ errors ${window.__errors.length}${window.__errors.length?`
  - `+window.__errors.slice(0,6).join(`
  - `):""}`}}}}function tP(){let i=()=>{};return{move:{x:0,y:0},look:{dx:0,dy:0},fire:!1,ads:!1,sprint:!1,crouch:!1,locked:!1,touch:!1,sensitivity:1,down:()=>!1,pressed:()=>!1,update:i,endFrame:i,requestLock:i,exitLock:i}}function nP(i){return{pos:new W(0,0,4),vel:new W,yaw:0,pitch:0,health:100,maxHealth:100,alive:!0,onGround:!0,sprinting:!1,crouching:!1,ads:0,speed:0,eye:new W(0,Pi.eye,4),forward:new W(0,0,-1),enabled:!1,reset(){},damage(){},heal(){},addRecoil(){},addShake(){},update(){}}}QC().catch(i=>bM(i&&i.stack||i));})();
 
+</script>
+
+<script>
+/* Simplified Chinese UI localization. Game identifiers, key names and telemetry remain unchanged. */
+(()=>{
+  const dict={
+    'Raising the terminal':'正在启动终端','Port Authority Breach Unit':'港务局突击小队','Saltline Terminal':'盐线终端','The port’s security net has gone feral. Cut its three uplinks. Reach the boat.':'港口安保网络已失控。切断三条上行链路，抵达撤离船只。',
+    'Deploy':'开始行动','Settings':'设置','Controls':'操作说明','Every surface, machine and sound is generated in your browser. Nothing is downloaded.':'所有场景、机械与音效均由浏览器实时生成，不会下载额外内容。','Controls at a glance':'操作速览','Move':'移动','Look':'视角','Fire':'射击','Aim':'瞄准','Reload':'装弹','Jump':'跳跃','Cut relay':'切断中继站','Sprint':'冲刺','Crouch':'蹲下','Pause':'暂停','Left thumb moves':'左侧拇指移动','Right thumb looks':'右侧拇指控制视角','Fire · Aim · Reload · Jump on screen':'使用屏幕按钮射击、瞄准、装弹和跳跃',
+    'Operation on hold':'行动暂停','Paused':'已暂停','Resume':'继续','Restart mission':'重新开始任务','Signal lost':'信号中断','Breacher down':'突击队员倒下','Time survived':'生存时间','Relays cut':'已切断中继站','Retry':'重试','Berth 4 · Debrief':'4号泊位 · 行动报告','Saltline is dark':'盐线已沉寂','Rating':'评级','Clean':'完美','Time':'用时','Accuracy':'命中率','Machines destroyed':'摧毁设备','Retries':'重试次数','Redeploy':'再次部署',
+    'Close':'关闭','Graphics quality':'画质','Mouse sensitivity':'鼠标灵敏度','Invert Y':'反转垂直视角','Off':'关闭','On':'开启','Xbox controller':'Xbox 手柄','Stick deadzone':'摇杆死区','Right stick horizontal':'右摇杆水平灵敏度','Right stick vertical':'右摇杆垂直灵敏度','Aim assist':'辅助瞄准','Aim slowdown':'瞄准减速','Magnetism':'目标吸附','Assist cone':'辅助角度','Target tracking':'目标跟踪','Controller vibration':'手柄震动','Master volume':'主音量','Field of view':'视野范围','Display':'显示','Enter fullscreen':'进入全屏','Exit fullscreen':'退出全屏','Quality was picked for this device':'已根据此设备自动选择画质','Lower it if the frame rate struggles.':'如果帧率不稳定，请调低画质。','Quality changes apply at once; shadows and reflections may take a moment to rebuild.':'画质设置立即生效；阴影和反射效果可能需要片刻重新生成。',
+    'Keyboard · Mouse':'键盘 · 鼠标','Touch':'触屏操作','Gamepad':'手柄','Left thumb, anywhere':'左侧任意位置滑动','Drag the right side':'在屏幕右侧拖动','Hold FIRE, drag to track':'按住射击并拖动以跟踪目标','AIM toggles':'点击瞄准按钮切换','Push the stick fully forward':'左摇杆推到底','If the browser will not capture the mouse, hold a mouse button and drag to look (left also fires, right also aims). Arrow keys or':'如果浏览器无法锁定鼠标，可按住鼠标键拖动视角（左键同时射击，右键同时瞄准）。也可使用方向键或','No controller detected. Connect an Xbox controller and press any button.':'未检测到手柄。请连接 Xbox 手柄并按下任意按键。','Connected: ':'已连接：','Left stick move · Right stick look · RT fire · LT aim · A jump · B pause/back · X reload · Y interact/cut relay · L3 sprint · Start pause.':'左摇杆移动 · 右摇杆视角 · RT 射击 · LT 瞄准 · A 跳跃 · B 暂停/返回 · X 装弹 · Y 互动/切断中继站 · L3 冲刺 · Start 暂停。',
+    'Mouse capture unavailable — move the mouse to look, rest it at a screen edge to keep turning · click fires · arrows or IJKL also turn':'无法锁定鼠标：移动鼠标调整视角，将鼠标停在屏幕边缘可持续转向；点击射击；方向键或 IJKL 也可转向','Touch controls active':'触屏操作已启用','Reloading':'装弹中','Empty':'弹药耗尽','Low ammo':'弹药不足','USE':'互动','Hold ':'按住 ',' — ':' — ','Resume recaptures the mouse.':'继续游戏后将重新捕获鼠标。','Enter fullscreen':'进入全屏','Fullscreen is not available here':'当前环境不支持全屏'
+  };
+  const attrs=['aria-label','title','placeholder'];
+  function translateText(node){
+    const raw=node.nodeValue, trimmed=raw.trim(); if(!trimmed)return;
+    if(dict[trimmed]){node.nodeValue=raw.replace(trimmed,dict[trimmed]);return;}
+    let out=trimmed;
+    for(const [en,zh] of Object.entries(dict)) if(en.length>3 && out.includes(en)) out=out.split(en).join(zh);
+    if(out!==trimmed) node.nodeValue=raw.replace(trimmed,out);
+  }
+  function scan(root){
+    if(root.nodeType===Node.TEXT_NODE){translateText(root);return;}
+    if(root.nodeType!==Node.ELEMENT_NODE && root!==document) return;
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;while(n=walker.nextNode())translateText(n);
+    if(root.querySelectorAll) for(const el of root.querySelectorAll('*')) for(const a of attrs){const v=el.getAttribute(a);if(v&&dict[v])el.setAttribute(a,dict[v]);}
+    if(root.nodeType===Node.ELEMENT_NODE) for(const a of attrs){const v=root.getAttribute(a);if(v&&dict[v])root.setAttribute(a,dict[v]);}
+  }
+  document.documentElement.lang='zh-CN';
+  scan(document);
+  new MutationObserver(records=>{for(const r of records){if(r.type==='characterData')translateText(r.target);else for(const n of r.addedNodes)scan(n);}}).observe(document.documentElement,{subtree:true,childList:true,characterData:true});
+})();
 </script>
 
 </html>
